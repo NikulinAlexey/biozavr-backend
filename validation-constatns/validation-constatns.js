@@ -22,42 +22,63 @@ const validateUpdateAvatar = celebrate({
   }),
 });
 
-// Валидация запросов для cards:
-const validateCreateCard = celebrate({
+// Валидация запросов для questions:
+const validateCreateQuestion = celebrate({
   body: Joi.object().keys({
-    link:
+    answer:
       Joi.string()
         .required()
-        .regex(/^https?:\/\/[www]?(.[\w,-]{1,}.?){1,}/)
-        .message('Невалидная ссылка на картинку'),
-    name:
+        .min(2),
+    explanation:
       Joi.string()
         .required()
-        .min(2)
-        .max(30),
+        .min(2),
+    image:
+      Joi.string()
+        .required(),
+    instruction:
+      Joi.string()
+        .required()
+        .min(2),
+    line:
+      Joi.string()
+        .required()
+        .min(1)
+        .max(2),
+    mainText:
+      Joi.string()
+        .required()
+        .min(2),
+    source:
+      Joi.string()
+        .required()
+        .min(2),
+    subText:
+      Joi.string()
+        .required()
+        .min(2),
+    theme:
+      Joi.string()
+        .required()
+        .min(2),
   }),
 });
-const validateDeleteCard = celebrate({
+const validateDeleteQuestion = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().required().hex().length(24),
-  }),
-});
-const validateAddLikeToCard = celebrate({
-  params: Joi.object().keys({
-    cardId: Joi.string().required().hex().length(24),
-  }),
-});
-const validateRemoveLikeFromCard = celebrate({
-  params: Joi.object().keys({
-    cardId: Joi.string().required().hex().length(24),
+    questionId: Joi.string().required().hex().length(24),
   }),
 });
 
 // Валидация запросов для авторизации, создания пользователя:
 const validateСreateUser = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
+    name:
+      Joi.string()
+        .min(2)
+        .max(30),
+    about: Joi.string()
+      .min(2)
+      .max(30),
     email:
       Joi.string()
         .required()
@@ -97,17 +118,41 @@ const validateLogin = celebrate({
   }),
 });
 
+const validateCreateQuizTopic = celebrate({
+  body: Joi.object().keys({
+    title:
+      Joi.string()
+        .required()
+        .min(2),
+    questions:
+      Joi.array()
+        .items(
+          Joi.object({
+            question: Joi.string(),
+            image: Joi.string(),
+          }),
+        ),
+  }),
+});
+
+const validateDeleteQuizTopic = celebrate({
+  params: Joi.object().keys({
+    quizTopicId: Joi.string().required().hex().length(24),
+  }),
+});
+
 module.exports = {
   // Валидация запросов для /users:
   validateGetUserById,
   validateUpdateProfile,
   validateUpdateAvatar,
-  // Валидация запросов для /cards:
-  validateCreateCard,
-  validateDeleteCard,
-  validateAddLikeToCard,
-  validateRemoveLikeFromCard,
+  // Валидация запросов для /questions:
+  validateCreateQuestion,
+  validateDeleteQuestion,
   // Валидация запросов для авторизации, создания пользователя:
   validateСreateUser,
   validateLogin,
+  // Валидация запросов для /quiz-topics:
+  validateCreateQuizTopic,
+  validateDeleteQuizTopic,
 };
